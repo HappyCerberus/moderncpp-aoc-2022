@@ -1,0 +1,13 @@
+Checks: |
+  -*
+  bugprone-*
+  cppcoreguidelines-*
+  misc-*
+  modernize-*
+  performance-*
+  portability-*
+  readability-*
+  -readability-redundant-declaration
+# Note: readability-redundant-declaration is broken when working with modules.
+
+WarningsAsErrors: "*"

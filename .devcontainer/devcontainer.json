@@ -1,0 +1,11 @@
+{
+	"image": "happycerberus/cpp-course:1.0.0",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"BazelBuild.vscode-bazel",
+				"ms-vscode.cpptools"
+			]
+		}
+	},
+}
