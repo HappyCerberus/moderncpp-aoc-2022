@@ -20,8 +20,7 @@ uint64_t max_calories(const std::vector<std::string>& data) {
             auto rng = elf | std::views::transform(to_unsigned) | std::views::common; // range{string} -> range{uint64_t}
             return std::reduce(rng.begin(), rng.end()); // range{uint64_t} -> uint64_t
         });
-    auto it = std::ranges::max_element(by_elf);
-    return *it;
+    return std::ranges::max(by_elf);
 }
 
 uint64_t top_three(const std::vector<std::string>& data) {
