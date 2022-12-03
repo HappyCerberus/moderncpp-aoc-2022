@@ -21,6 +21,9 @@
         "ranges": "cpp",
         "span": "cpp",
         "regex": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "*.ipp": "cpp",
+        "__locale": "cpp",
+        "functional": "cpp"
     }
 }
