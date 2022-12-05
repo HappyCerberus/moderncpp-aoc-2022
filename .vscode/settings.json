@@ -81,6 +81,9 @@
         "system_error": "cpp",
         "thread": "cpp",
         "tuple": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "simd": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp"
     }
 }
