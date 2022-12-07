@@ -4,8 +4,9 @@
             "name": "Linux",
             "cppStandard": "c++20",
             "intelliSenseMode": "linux-clang-x64",
+            "compilerPath": "",
             "includePath": ["${workspaceFolder}/**", "/root/.cache/bazel/**"],
-            "compileCommands": "/workspaces/moderncpp-aoc-2022/bazel-bin/compile_commands.json"
+            "compileCommands": "/workspaces/moderncpp-aoc-2022/bazel-bin/day07/compile_commands.json"
         }
     ],
     "version": 4

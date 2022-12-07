@@ -84,6 +84,20 @@
         "variant": "cpp",
         "simd": "cpp",
         "hash_map": "cpp",
-        "hash_set": "cpp"
+        "hash_set": "cpp",
+        "__std_stream": "cpp",
+        "any": "cpp",
+        "barrier": "cpp",
+        "cfenv": "cpp",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "cuchar": "cpp",
+        "coroutine": "cpp",
+        "propagate_const": "cpp",
+        "future": "cpp",
+        "latch": "cpp",
+        "scoped_allocator": "cpp",
+        "strstream": "cpp",
+        "typeindex": "cpp"
     }
 }
