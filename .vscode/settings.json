@@ -99,5 +99,6 @@
         "scoped_allocator": "cpp",
         "strstream": "cpp",
         "typeindex": "cpp"
-    }
+    },
+    "C_Cpp.loggingLevel": "Debug"
 }
