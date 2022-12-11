@@ -6,7 +6,9 @@ This repository contains the code for the solutions of Advent of Code 2022 using
 
 The repository uses a VSCode devcontainer environment with the Bazel build system. Opening the repository in VSCode with Docker installed on your machine will download and start a devcontainer that can then be used to build and run all the solutions.
 
-Note that since the Bazel project relies on the `ll_rules` module to provide C++20 modules, the first time you try to run/build any of the examples, the module will build a patched version of clang (which will take a significant amount of time).
+Note that since the Bazel project relies on the [`rules_ll`](https://github.com/eomii/rules_ll) module to provide C++20 modules, the first time you try to run/build any of the examples, the module will build a patched version of clang (which will take a significant amount of time).
+
+The IntelliSense in the VSCode C++ plugin currently struggles with C++20 modules ([bug](https://github.com/microsoft/vscode-cpptools/issues/10258)).
 
 ## Links to accompanying posts
 
@@ -21,3 +23,4 @@ Note that since the Bazel project relies on the `ll_rules` module to provide C++
 | Day 7 | [Link](https://twitter.com/SimonToth83/status/1600550961021435926) | [Link](https://www.linkedin.com/feed/update/urn:li:activity:7006316698714656768/) | [Link](https://mastodon.world/@simontoth/109473693847283708) | [Link](https://medium.com/@simontoth/modern-c-in-advent-of-code-day-7-2c3816e00cf) | [Link](https://simontoth.substack.com/p/modern-c-in-advent-of-code-day-7) |
 | Day 8 | [Link](https://twitter.com/SimonToth83/status/1600913104233271333) | [Link](https://www.linkedin.com/feed/update/urn:li:activity:7006678805025087488/) | [Link](https://mastodon.world/@simontoth/109479356492120426) | [Link](https://medium.com/@simontoth/modern-c-in-advent-of-code-day-8-3de2465e9f2e) | [Link](https://simontoth.substack.com/p/modern-c-in-advent-of-code-day-8) |
 | Day 9 | [Link](https://twitter.com/SimonToth83/status/1601275541444853763) | [Link](https://www.linkedin.com/feed/update/urn:li:activity:7007041276638281729/) | [Link](https://mastodon.world/@simontoth/109485018323807134) | [Link](https://medium.com/@simontoth/modern-c-in-advent-of-code-day-9-78558d0f7d20) | [Link](https://simontoth.substack.com/p/modern-c-in-advent-of-code-day-9) |
+| Day 10 | [Link](https://twitter.com/SimonToth83/status/1601637900650692609) | [Link](https://www.linkedin.com/feed/update/urn:li:activity:7007403717087887360/) | [Link](https://mastodon.world/@simontoth/109490680697585054) | [Link](https://medium.com/@simontoth/modern-c-in-advent-of-code-day-10-b4910e2ab63b) | [Link](https://simontoth.substack.com/p/modern-c-in-advent-of-code-day-10) |
