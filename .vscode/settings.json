@@ -98,7 +98,8 @@
         "latch": "cpp",
         "scoped_allocator": "cpp",
         "strstream": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "__memory": "cpp"
     },
     "C_Cpp.loggingLevel": "Debug"
 }
