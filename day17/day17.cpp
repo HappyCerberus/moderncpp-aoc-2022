@@ -13,7 +13,6 @@ import day17.tetris;
 int test() {
     using namespace day17::tetris;
     assert(simulate(">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>", 2022) == 3068);
-    assert(simulate_with_cycle_detection(">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>", 2022) == 3068);
     assert(simulate_with_cycle_detection(">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>", 1000000000000) == 1514285714288);
     return 0;
 }
@@ -31,9 +30,7 @@ int parse_and_run(std::string_view path) {
     std::getline(file, pattern);
 
     std::cout << "The tower will be " << simulate(pattern, 2022) << " units tall after dropping 2022 pieces.\n";
-    std::cout << "The tower will be " << simulate_with_cycle_detection(pattern, 2022) << " units tall after dropping 2022 pieces.\n";
     std::cout << "The tower will be " << simulate_with_cycle_detection(pattern, 1000000000000) << " units tall after dropping 1000000000000 pieces.\n";
-
     return 0;
 }
 

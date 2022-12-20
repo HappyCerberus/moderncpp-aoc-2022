@@ -4,7 +4,7 @@ ll_binary(
    name = "day17",
    srcs = ["day17.cpp"],
    interfaces = {"tetris.cppm": "day17.tetris"},
-   compile_flags = ["-std=c++20", "-Wall", "-Wextra", "-gdwarf-2"],
+   compile_flags = ["-std=c++20", "-Wall", "-Wextra", "-O3"],
 )
 
 ll_compilation_database(

@@ -37,6 +37,7 @@ struct Chamber {
         while (std::ssize(map) <= max_row+7)
             map.push_back(std::vector<char>(7, ' '));
     }
+
     int64_t max_row = -1;
     std::vector<std::vector<char>> map;
 
@@ -316,82 +317,122 @@ int64_t simulate(std::string pattern, size_t limit) {
     return chamber.max_row+1;
 }
 
-struct CycleInfo {
-    size_t shape_idx;
-    size_t pattern_idx;
-    int64_t max;
-    std::vector<int64_t> rows;
-    bool is_cycle(const CycleInfo& other) {
-        return rows[1]-rows[0] == other.rows[1]-other.rows[0] &&
-            rows[2]-rows[0] == other.rows[2]-other.rows[0] &&
-            rows[3]-rows[0] == other.rows[3]-other.rows[0] &&
-            rows[4]-rows[0] == other.rows[4]-other.rows[0];
-    }
-};
+// Verify that a potential cycle is an actual perfect cycle
+// perfect cycle:
+// - all pieces repeat in their offset positions
+// - the pattern advances by the same amount
+bool verify_perfect_cycle(std::string pattern, size_t limit, size_t piece_offset, size_t piece_period) {
+    // Cannot simulate, total length more than limit
+    if (piece_offset + piece_period*10 > limit) return false;
 
-// Incorrect solution
-int64_t simulate_with_cycle_detection(std::string pattern, size_t limit) {
     Chamber chamber;
     size_t pattern_idx = 0;
     size_t shape_idx = 0;
 
-    // First, detect cycle
-    std::multimap<std::vector<int64_t>, CycleInfo> lookup_table;
-    std::vector<int64_t> key;
-    CycleInfo value;
-
-    size_t initial_limit = 0;
-    size_t cycle_period = 0;
-    size_t pattern_period = 0;
-    int64_t max_row_diff = 0;
-
-    while (shape_idx != limit) {
-        if (shape_idx % 5 == 0) {
-            value.shape_idx = shape_idx;
-            value.pattern_idx = pattern_idx;
-        }
-
-        auto final_coord = simulate_single_piece(chamber, shape_idx, pattern, pattern_idx);
-        key.push_back(final_coord.col);
-        value.rows.push_back(final_coord.row);
-
-        if (shape_idx % 5 == 4) { 
-            value.max = chamber.max_row;
-            for (auto [it,end] = lookup_table.equal_range(key); it != end; it++) {
-                if (value.is_cycle(it->second)) {
-                    initial_limit = shape_idx-4;
-                    cycle_period = (shape_idx-4)-it->second.shape_idx;
-                    max_row_diff = value.max-it->second.max;
-                    pattern_period = value.pattern_idx-it->second.pattern_idx;
-                    break;
-                }
-            }
-            if (initial_limit != 0) break;
-            lookup_table.insert(std::make_pair(key,value));
-            key = {};
-            value = {};
-        }
-        ++shape_idx;
-    }
-    
-    chamber = {};
-    shape_idx = 0;
-    pattern_idx = 0;
-    while (shape_idx != initial_limit) {
+    while (shape_idx != piece_offset) {
         simulate_single_piece(chamber, shape_idx, pattern, pattern_idx);
         ++shape_idx;
     }
 
-    // "simulate" cycles
-    size_t cycle_count = ((limit-initial_limit)/cycle_period);
-    size_t offset = cycle_count*max_row_diff;
+    size_t pattern_base = pattern_idx;
+    size_t pattern_diff = 0;
 
-    shape_idx += cycle_count*cycle_period;
+    std::vector<Coord> data;
+    // We can check as my repetitions as desired
+    for (auto rep : std::views::iota(1, 10)) {
+        std::vector<Coord> current;
+        // record
+        while (shape_idx != piece_offset+rep*piece_period) {
+            auto coord = simulate_single_piece(chamber, shape_idx, pattern, pattern_idx);
+            current.push_back(coord);
+            ++shape_idx;
+        }
+        // check pieces against previous cycle
+        if (!data.empty()) {
+            int64_t base_old = data[0].row;
+            int64_t base_new = current[0].row;
+            for (auto idx : std::views::iota(0uz, data.size())) {
+                if (data[idx].col != current[idx].col)
+                    return false;
+                if (data[idx].row-base_old != current[idx].row-base_new)
+                    return false;
+            }
+            data = std::move(current);
+            current = {};
+        }
+        // Verify that the pattern also advances in a regular manner
+        if (pattern_diff == 0)
+            pattern_diff = pattern_idx-pattern_base;
+        if (pattern_idx != pattern_base+rep*pattern_diff)
+            return false;
+    }
+
+    return true;
+}
+
+// Run the simulation with a known cycle
+int64_t simulate_with_cycle(std::string pattern, size_t limit, size_t piece_offset, size_t piece_period) {
+    Chamber chamber;
+    size_t shape_idx = 0;
+    size_t pattern_idx = 0;
+    while (shape_idx != piece_offset) {
+        simulate_single_piece(chamber, shape_idx, pattern, pattern_idx);
+        ++shape_idx;
+    }
+
+    // Run through the first instance of the cycle to get the pattern and max_row periods
+    size_t base_pattern = pattern_idx;
+    size_t base_max_row = chamber.max_row;
+    while (shape_idx != piece_offset + piece_period) {
+        simulate_single_piece(chamber, shape_idx, pattern, pattern_idx);
+        ++shape_idx;
+    }
+
+    size_t pattern_period = pattern_idx - base_pattern;
+    size_t max_row_period = chamber.max_row - base_max_row;
+
+    // "simulate" cycles
+    size_t cycle_count = ((limit-pattern_idx)/piece_period);
+    size_t offset = cycle_count*max_row_period;
+    shape_idx += cycle_count*piece_period;
     pattern_idx += cycle_count*pattern_period;
+
     while (shape_idx != limit) {
         simulate_single_piece(chamber, shape_idx, pattern, pattern_idx);
         ++shape_idx;
     }
     return chamber.max_row+1+offset;
+}
+
+int64_t simulate_with_cycle_detection(std::string pattern, size_t limit) {
+    Chamber chamber;
+    size_t pattern_idx = 0;
+    size_t shape_idx = 0;
+
+    // Remember the column positions of the 5 pieces
+    std::multimap<std::vector<int64_t>, int64_t> lookup_table;
+    std::vector<int64_t> key;
+
+    while (shape_idx != limit) {
+        auto final_coord = simulate_single_piece(chamber, shape_idx, pattern, pattern_idx);
+        key.push_back(final_coord.col);
+        if (shape_idx % 5 != 4) { // Not the final piece of the set of five
+            ++shape_idx;
+            continue;
+        }
+
+        // For every previously seen configuration that matches current set
+        for (auto [it,end] = lookup_table.equal_range(key); it != end; it++)
+            // Check if this is actually a cycle
+            if (verify_perfect_cycle(pattern, limit, it->second, (shape_idx-4)-it->second))
+                // And if it is, simulate
+                return simulate_with_cycle(pattern, limit, it->second, (shape_idx-4)-it->second);
+
+        lookup_table.insert(std::make_pair(key,shape_idx-4));
+        key = {};
+        ++shape_idx;
+    }
+    
+    return -1;
 }
 }
